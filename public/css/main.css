@@ -1,4 +1,8 @@
 
+.menu {
+    height: 13%;
+}
+
 i.icon {
     font-size: 2rem;
 }
@@ -7,6 +11,27 @@ i.icon {
     margin-top: 7rem;
 }
 
+.ui.fixed.menu .item:hover {
+    background-color: #008080;
+    color: #fff;
+}
+
+.ui.huge.header {
+    color: #008080;
+}
+
+.content span {
+    text-align: right;
+    display: block;
+    color: #7e7e7e;
+}
+
+.orange.button, .red.button, .extra .button {
+    margin-top: 1rem;
+}
+
 #delete {
     display: inline;
 }
+
+

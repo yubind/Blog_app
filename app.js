@@ -1,5 +1,6 @@
-var express = require('express'),
-    bodyParser = require('body-parser'),
+var bodyParser = require('body-parser'),
+    express = require('express'),
+    expressSanitizer = require('express-sanitizer'),
     methodOverride = require('method-override'),
     mongoose = require('mongoose'),
     app = express();
@@ -8,8 +9,9 @@ var express = require('express'),
 mongoose.connect('mongodb://localhost/blog_app', { useNewUrlParser: true });
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride('_method'));
+app.use(expressSanitizer());
 
 //mongoose/ model config
 var blogSchema = new mongoose.Schema({
@@ -44,7 +46,8 @@ app.get('/blogs/new', function(req, res) {
 
 //create route
 app.post('/blogs', function(req, res) {
-   Blog.create(req.body.blog, function(err, newBlog) {
+    req.body.blog.body = req.sanitize(req.body.blog.body);
+    Blog.create(req.body.blog, function(err, newBlog) {
        if(err) {
            res.render('new');
        } else {
@@ -66,25 +69,26 @@ app.get('/blogs/:id', function(req, res) {
 
 
 //edit route
-app.get('/blogs/:id/edit', function(req, res) {
-   Blog.findById(req.params.id, function(err, foundBlog) {
-      if(err) {
-          res.redirect('/blogs/:id');
-      } else {
-          res.render('edit', {blog: foundBlog});
-      }
-   });
+app.get('/blogs/:id/edit', function(req, res){
+    Blog.findById(req.params.id, function(err, foundBlog){
+        if(err){
+            res.redirect('/blogs');
+        } else {
+            res.render('edit', {blog: foundBlog});
+        }
+    });
 });
 
 //update route
-app.put('/blogs/:id', function(req, res) {
-    Blog.findOneAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog) {
-        if(err) {
-            res.redirect('/blogs')
-        } else {
-            res.redirect('/blogs/' + req.params.id);
-        }
-    });
+app.put('/blogs/:id', function(req, res){
+    req.body.blog.body = req.sanitize(req.body.blog.body)
+   Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
+      if(err){
+          res.redirect('/blogs');
+      }  else {
+          res.redirect('/blogs/' + req.params.id);
+      }
+   });
 });
 
 //destroy route
