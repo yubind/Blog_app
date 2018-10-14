@@ -1,7 +1,15 @@
+<% include ./partials/header %>
+
 <h1>INDEX PAGE</h1>
 
 <% blogs.forEach((blog) => { %>
-<div>
-    <h2><%= blog.title %></h2>
-</div>
-<% )}; %>
+    <div class="ui container">
+        <h2><%= blog.title %></h2>
+        <img src="<%= blog.image %>">
+        <span><%= blog.created %></span>
+        <p><%= blog.body.substring(0, 100) %>...</p>
+        <a class="ui blue button" href="/blogs/<%= blog._id %>">Read More</a>
+    </div>
+<% }); %>
+
+<% include ./partials/footer %>
