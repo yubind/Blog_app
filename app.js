@@ -6,7 +6,8 @@ var bodyParser = require('body-parser'),
     app = express();
     
 //app config
-mongoose.connect('mongodb://yubin:yubin0819@ds133113.mlab.com:33113/blogapp', { useNewUrlParser: true });
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
